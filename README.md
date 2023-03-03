@@ -39,6 +39,7 @@ Note that `Makefile.init` includes the header to define the default Fotran compi
 	  cd ../.
 	  make
 
+(work in progress)
 
 ### trained neural networks
 
