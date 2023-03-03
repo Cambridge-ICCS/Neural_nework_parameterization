@@ -22,22 +22,23 @@ A `Makefile` can be generated in the following way:
 
 1. Generate a `SrcFiles` list within the `sam_code_NN/SCRIPT` directory by doign:
 
-         cd same_code_NN/SCRIPT
-         ./mkSrcFiles
+          cd same_code_NN/SCRIPT
+          ./mkSrcFiles
 
 Note this looks in `Filepath` to ascertain the location of the source files, which currently is defined to point to the parent directory, i.e. `../.`
 
 2. Generate `Makefile` via:
 
-        (cat Makefile.init ; ./mkDepends Filepath Srcfiles) > Makefile
+         (cat Makefile.init ; ./mkDepends Filepath Srcfiles) > Makefile
 
 Note that `Makefile.init` includes the header to define the default Fotran compiler and its flags.
 
 3. Next copy the makfile back and run it
 
-         cp Makefile ../.
-	 cd ../.
-	 make
+          cp Makefile ../.
+	  cd ../.
+	  make
+
 
 ### trained neural networks
 
