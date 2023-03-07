@@ -2,9 +2,8 @@
 FC = gfortran
 FFLAGS =
 all: main.o
-	$(FC) main.f90 -o main
-%.o: %.mod
-%.o: %.f90 %.f
-	$(FC) $(FFLAGS) -c $<
 clean:
 	rm -vf *.o
+%.o: %.mod
+%.o: %.f90
+	$(FC) $(FFLAGS) -c $<
