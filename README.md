@@ -14,6 +14,25 @@ The code is divided to three main directories:
 3. high_res_processing_code: matlab code used to calculate the coarse-grained and resolved tendencies, fluxes, diffusivity and input variables. This code uses the high-resolution data to calculate these quantities. The code that was ran was main.m. 
 The high-resolution simulation output and a readme.txt file describing the high-resolution data is found at [this google drive](https://drive.google.com/drive/folders/1TRPDL6JkcLjgTHJL9Ib_Z4XuPyvNVIyY).
 
+### Building
+#### cam_code_NN
+##### CMake
+dependencies:
+- NetCDF
+- MPI
+- CMake
+- ifort (yet to test with gfortran)
+
+To build using cmake run the following commands from `sam_code_NN/`:
+```
+mkdir build
+cd build
+cmake ../.
+make
+```
+This creates a build directory, runs the CMake script CMakeLists.txt to generate a makefile for the system and then builds using the makefile.
+The output executable will be at build/main
+
 ### trained neural networks
 
 All the neural networks used in this study are saved in the NNs directory.
