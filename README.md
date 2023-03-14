@@ -21,13 +21,13 @@ dependencies:
 - NetCDF
 - MPI
 - CMake
-- ifort (yet to test with gfortran)
+- ifort or gcc
 
-To build using cmake run the following commands from `sam_code_NN/`:
+To build using cmake edit the file `CMakeLists.txt` to select the appropriate fortran compiler and then run the following commands from `sam_code_NN/`:
 ```
 mkdir build
 cd build
-cmake ../.
+cmake ..
 make
 ```
 This creates a build directory, runs the CMake script CMakeLists.txt to generate a makefile for the system and then builds using the makefile.
