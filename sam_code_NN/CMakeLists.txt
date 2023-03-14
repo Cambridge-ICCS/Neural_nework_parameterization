@@ -3,6 +3,11 @@ cmake_minimum_required(VERSION 3.2)
 cmake_policy (SET CMP0076 NEW)
 
 set ( CMAKE_Fortran_COMPILER "ifort" )
+# set ( CMAKE_Fortran_COMPILER "gfortran" )
+
+# get the bare name of the compiler for use later in if clauses
+get_filename_component(barefortrancompiler ${CMAKE_Fortran_COMPILER} NAME)
+
 project(SAMNN Fortran C)
 
 if(NOT CMAKE_BUILD_TYPE)
@@ -14,20 +19,15 @@ add_executable ( main )
 # No header files
 # target_include_directories( main PUBLIC )
 # No libraries
-add_library( main_c ) # The C parts of MiMA, so we can apply different options for them.
+add_library( main_c ) # The C parts of the code so we can apply different options for them.
 target_compile_definitions( main_c PRIVATE __IFC )
 target_compile_definitions( main PRIVATE use_libMPI use_netCDF )
-
-# Set to install in bin directory
-# if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-#   set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/bin" CACHE PATH "..." FORCE)
-# endif()
 
 #Add cmake directory to the environment module variable
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-# Find MPIb libraries and link
-find_package (MPI REQUIRED)
+# Find MPI libraries and link
+find_package(MPI REQUIRED)
 target_link_libraries( main PRIVATE MPI::MPI_Fortran )
 
 # Find the NetCDF installations and set the relevant variables for compilation
@@ -40,12 +40,13 @@ if (NETCDF_FORTRAN_FOUND)
     set(NETCDF_INCLUDES "${NETCDF_FORTRAN_INCLUDE_DIRS}")
 else()
     set(NETCDF_F90 "YES")
+    set(NETCDF_F77 "YES")
     find_package(NetCDF REQUIRED)
 endif()
 pkg_search_module(NETCDF_C netcdf)
 if (NETCDF_C_FOUND)
-    set(NETCDF_LIBRARIES "${NETCDF_LIBRARIES} ${NETCDF_C_LDFLAGS}")
-    set(NETCDF_INCLUDES "${NETCDF_LIBRARIES} ${NETCDF_C_INCLUDE_DIRS}")
+    list(APPEND NETCDF_LIBRARIES "${NETCDF_C_LDFLAGS}")
+    list(APPEND NETCDF_INCLUDES "${NETCDF_C_INCLUDE_DIRS}")
 endif()
 
 target_link_libraries( main PRIVATE main_c ${NETCDF_LIBRARIES} )
@@ -54,29 +55,31 @@ target_include_directories( main PRIVATE ${NETCDF_INCLUDES} )
 # Add various subdirectories with long lists of source files
 add_subdirectory( RAD_CAM )
 
-
-# Set ifort compile options for executable
-target_compile_options( main PRIVATE
-# Preprocess
--fpp
--safe-cray-ptr
-# Flush to zero - possibly unneccessary if not using IEEE modules?
--ftz
-# -assume byterecl
-)
-
-# # Set gfortran compile options for executable
-# target_compile_options( main PRIVATE
-# # Preprocess
-# -cpp
-# -fcray-pointer
-# # Flush to zero - possibly unneccessary if not using IEEE modules?
-# -fno-unsafe-math-optimizations
-# -frounding-math
-# -fsignaling-nans
-# # -assume byterecl
-# -ffree-line-length-none
-# )
+# Set compile options
+if(${barefortrancompiler} STREQUAL "ifort")
+    # Set ifort compile options for executable
+    target_compile_options( main PRIVATE
+    # Preprocess
+    -fpp
+    -safe-cray-ptr
+    # Flush to zero - possibly unneccessary if not using IEEE modules?
+    -ftz
+    # -assume byterecl
+    )
+elseif(${barefortrancompiler} STREQUAL "gfortran")
+    # Set gfortran compile options for executable
+    target_compile_options( main PRIVATE
+    # Preprocess
+    -cpp
+    -fcray-pointer
+    # Approximate ifort's Flush to zero - possibly unneccessary if not using IEEE modules?
+    -fno-unsafe-math-optimizations
+    -frounding-math
+    -fsignaling-nans
+    # Don't impose a limit on line length
+    -ffree-line-length-none
+    )
+endif()
 
 set ( MAIN
 abcoefs.f90
@@ -196,8 +199,9 @@ task_exchange.f90
 task_init.f90
 task_ranks.f90
 task_rank_to_index.f90
+# Select from following 2 files to build with or without MPI
 task_util_MPI.f90
-#task_util_NOMPI.f9000
+# task_util_NOMPI.f90
 tke_full.f90
 upperbound.f90
 utils.f90
@@ -210,6 +214,20 @@ write_fields3D.f90
 wv_saturation.f90
 zero.f90
 )
+
+# Building with gfortran >= 10.0 and using MPI routines in task_util_MPI.f90
+# will trigger argument mismatch errors.
+# These can be disabled to warnings by setting a compiler flag.
+# The following automates this so the user need not interfere when changing compilers.
+if(${barefortrancompiler} STREQUAL "gfortran")
+  if(${CMAKE_Fortran_COMPILER_VERSION} GREATER_EQUAL "10.0")
+      set_source_files_properties (
+      task_util_MPI.f90
+      PROPERTIES
+      COMPILE_FLAGS -fallow-argument-mismatch
+      )
+  endif()
+endif()
 
 # The C parts of the code
 target_sources ( main_c PRIVATE
