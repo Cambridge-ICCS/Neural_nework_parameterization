@@ -1,0 +1,4 @@
+[submodule "SAMSON_NN/SRC/refactored"]
+	path = SAMSON_NN/SRC/refactored
+	url = git@github.com:m2lines/convection-parameterization-in-CAM.git
+	branch = main
