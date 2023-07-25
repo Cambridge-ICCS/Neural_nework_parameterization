@@ -12,8 +12,8 @@ use nn_convection_flux_mod
 use nn_diffusion_mod
 use random_forest_param_diffusion ! janniy
 
-use nn_interface_SAM_mod, only : nn_convection_flux_SAM, nn_convection_flux_SAM_init, &
-                                 nn_convection_flux_SAM_finalize
+!use nn_interface_SAM_mod, only : nn_convection_flux_SAM, nn_convection_flux_SAM_init, &
+!                                 nn_convection_flux_SAM_finalize
 
 implicit none
 
@@ -65,7 +65,7 @@ endif
 
 if(dorandomforest) then
  if(doiccsnn) then
-  call nn_convection_flux_SAM_init(rf_filename)
+!  call nn_convection_flux_SAM_init(rf_filename)
  else
   call nn_convection_flux_init()
  endif
@@ -515,10 +515,10 @@ do k=1,nzm
          end if
          if(dorandomforest) then 
           if(doiccsnn) then
-           call nn_convection_flux_SAM(t_i, q_i, qp_i, rho, adz, tabs, &
-                                      dz, dtn, t, q, qn, precsfc, prec_xy, &
-                                      dy, ny, ny_gl, &
-                                      nstep, nstatis, icycle, YES3D)
+!           call nn_convection_flux_SAM(t_i, q_i, qp_i, rho, adz, tabs, &
+!                                      dz, dtn, t, q, qn, precsfc, prec_xy, &
+!                                      dy, ny, ny_gl, &
+!                                      nstep, nstatis, icycle, YES3D)
           else
            call nn_convection_flux()
           end if
@@ -620,7 +620,7 @@ end if
 
 ! Clean up the NN
 if(doiccsnn) then
- call nn_convection_flux_SAM_finalize()
+! call nn_convection_flux_SAM_finalize()
 end if
 
 call task_abort()
