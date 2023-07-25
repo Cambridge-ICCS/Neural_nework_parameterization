@@ -6,7 +6,7 @@
   outputs = inputs@{ self, nixpkgs, flake-utils, ... }:
    flake-utils.lib.eachDefaultSystem (system:
      let
-       name = "cam-ml-old";
+       name = "samson";
        src = ./.;
        pkgs = import nixpkgs {
          inherit system;
@@ -26,6 +26,10 @@
            netcdf netcdffortran
          ];
          patches = [ ./cmake-gfortran.patch ];
+         installPhase = ''
+           mkdir -p $out/bin
+           install -m755 main $out/bin/${name}
+         '';
        };
      });
 }
