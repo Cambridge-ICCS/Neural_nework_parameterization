@@ -245,7 +245,7 @@ NAMELIST /UWOPTIONS/  nelapsemin, dorestart_last, dooldrestart, &
 	nensemble	= 0
  	qnsave3D	= 0.
 	ocean_type	= 0 
-        raddir          = '/home/kzm/Model/SAMson/RADDATA/' !SAM6.3 default:'./RADDATA'
+        raddir          = './RADDATA'
 
         ! Specify solar constant and zenith angle for perpetual insolation.
         ! Note that if doperpetual=.true. and dosolarconstant=.false.
