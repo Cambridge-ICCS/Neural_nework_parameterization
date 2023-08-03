@@ -17,6 +17,7 @@ integer j,k, ios
 
 NAMELIST /PARAMETERS/ dodamping, doupperbound, docloud, doprecip, &
                 dorandomforest, do_rf_diffusion, do_rf_q_surf_flux, rf_filename, rf_uses_qp, rf_uses_rh, &
+                doiccsnn, &
                 do_wind_input_rf, do_z_diffusion_rf, do_q_T_surf_fluxes_rf, do_surf_wind_rf, do_q_surf_fluxes_out_rf, & !New parameters after matlab corrections.
                 do_sedimentation_rf, do_fall_tend_rf, do_radiation_output_rf, do_flux_rf, do_hor_advection_rf, do_hor_diffusion_rf, &
                 Tin_feature_rf, qin_feature_rf, Tin_z_grad_feature_rf, qin_z_grad_feature_rf, predict_tendencies_rf, do_tkh_z, do_tkh_xy, &
@@ -140,6 +141,7 @@ NAMELIST /UWOPTIONS/  nelapsemin, dorestart_last, dooldrestart, &
     do_rf_q_surf_flux = .false.
 	rf_uses_qp  = .false.
 	rf_uses_rh  = .false.
+    doiccsnn  = .false.
    !New parameters after matlab corrections. 
     do_wind_input_rf = .false.
     do_z_diffusion_rf = .false.
@@ -243,7 +245,7 @@ NAMELIST /UWOPTIONS/  nelapsemin, dorestart_last, dooldrestart, &
 	nensemble	= 0
  	qnsave3D	= 0.
 	ocean_type	= 0 
-        raddir          = '/home/kzm/Model/SAMson/RADDATA/' !SAM6.3 default:'./RADDATA'
+        raddir          = './RADDATA'
 
         ! Specify solar constant and zenith angle for perpetual insolation.
         ! Note that if doperpetual=.true. and dosolarconstant=.false.
