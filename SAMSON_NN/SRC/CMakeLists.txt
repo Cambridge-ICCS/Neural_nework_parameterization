@@ -55,6 +55,9 @@ target_include_directories( main PRIVATE ${NETCDF_INCLUDES} )
 # Add various subdirectories with long lists of source files
 add_subdirectory( RAD_CAM )
 
+# add refactored neural net
+add_subdirectory( refactored/NN_module )
+
 # Set compile options
 if(${barefortrancompiler} STREQUAL "ifort")
     # Set ifort compile options for executable
